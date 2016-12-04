@@ -3,43 +3,39 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-^2::
-NumberOfSingles := 1
-NumberOfMulties :=1
-NumberOfGifts :=3
-;MsgBox %NumberOfMulties%
-Return
 
 ^q::
-Sleep, 500
-Reset()
-GetToMainScreen()
-AcceptGifts()
-;Pulls...
-TakeScreenshots()
+Loop
+{
+    Sleep, 500
+    Reset()
+    GetToMainScreen()
+    AcceptGifts(1)
+    MultiSummon(2)
+    SingleSummon(3)
+    TakeScreenshots()
+}
 Return
 
 
 Reset()
 {
-    ;Sleep, 500
     MouseClick, left , 500, 25                  ; Close dokkan
     Sleep, 3000
-    MouseClick, left, 650, 270			        ;Launch Reroll
+    MouseClick, left, 650, 270			        ; Launch Reroll
     Sleep, 5000
-    MouseClick, left, 450, 270                  ;Launch dbz
+    MouseClick, left, 440, 270                  ; Launch dbz
     Sleep, 4500
 }
 
 GetToMainScreen()                               ;This needs maintenance
 {
-    ;Sleep, 500
     MouseClick, left, 965, 650                  ; middle ok Hercule screen
     Sleep, 4000
     MouseClick, left, 965, 650                  ; middle ok Touch start
     Sleep, 14000
     MouseClick, left, 1200, 110                 ; Skip Trunks introduction
-    Sleep, 4250
+    Sleep, 6000                                 ;varies between 4.5 to 8
     MouseClick, left, 965, 650                  ; click ok Downlaod complete
     Sleep, 8000
     MouseClick, left, 1200, 110                 ; Skip tap quest trunks
@@ -60,12 +56,12 @@ GetToMainScreen()                               ;This needs maintenance
     Sleep, 750
 }
 
-AcceptGifts()
+AcceptGifts(numberOfGiftPages)
 {
     ;Accepting gift section (Precondition: Be on the main screen)
     MouseClick, left, 1170, 750                 ; Click on Gift button on main screen
     Sleep, 1750
-    Loop, 3
+    Loop, %numberOfGiftPages%
     {
         MouseClick, left, 1200, 180             ; Click accept all gifts
         Sleep, 750
@@ -76,12 +72,11 @@ AcceptGifts()
     }
 }
 
-AddCharSlots()
+AddCharSlots(numberOfCharSlots)
 {
     MouseClick, left, 1090, 1020                     ; Click on shop
     Sleep, 2000
-
-    Loop, 3
+    Loop, %numberOfCharSlots%
     {
         MouseClick, left, 800,800                    ; Click add char slots
         Sleep, 750
@@ -91,6 +86,75 @@ AddCharSlots()
         Sleep, 750
     }
 }
+MultiSummon(numberOfSwipeUp)
+{
+	MouseClick, left, 975, 1000                         ; Click go to summon tab
+	Sleep, 2250
+	SwipeUp(numberOfSwipeUp)
+    MouseClick, left, 1050, 730                          ; Click Multi-Summon
+	Sleep, 825
+	MouseClick, left, 1075, 730                         ; Confirm Multi
+	Sleep, 7750
+	MouseClickDrag, left, 975, 900, 975, 1100,50        ; Drag down
+	Sleep, 8500 ;was 15
+	Loop, 35    ;was 25
+    {
+        MouseClick, left, 975, 700                      ; Click 10x because multi
+        Sleep, 300
+    }
+    Sleep, 1500
+}
+
+SingleSummon(numberOfSwipeUp)
+{
+	MouseClick, left, 975, 1000                         ; Click go to summon tab
+	Sleep, 2250
+	SwipeUp(numberOfSwipeUp)
+    MouseClick, left, 900, 730                          ; Click Single-Summon
+	Sleep, 825
+	MouseClick, left, 1075, 730                         ; Confirm Single
+	Sleep, 7750
+	MouseClickDrag, left, 975, 900, 975, 1100,50        ; Drag down
+	Sleep, 8500 ;was 15
+	Loop, 15
+    {
+        MouseClick, left, 975, 700                ; spam click to get to end
+        Sleep, 300
+    }
+    Sleep, 1000
+}
+
+SequentialSingleSummon(numberOfSwipeUp,numberOfExtraSingleSummons)
+{
+    SingleSummon(numberOfSwipeUp)
+    Loop, %numberOfExtraSingleSummons%
+    {
+        MouseClick, left, 850, 780
+        Sleep, 825
+        MouseClick, left, 1075, 730                         ; Confirm Single
+        Sleep, 7750
+        MouseClickDrag, left, 975, 900, 975, 1100,50        ; Drag down
+        Sleep, 8500 ;was 15
+        Loop, 15
+        {
+            MouseClick, left, 975, 700                ; spam click to get to end
+            Sleep, 300
+        }
+        Sleep, 1000
+    }
+}
+
+
+
+SwipeUp(numberOfSwipes)
+{
+    Loop, %numberOfSwipes%                              ;Loop to swipe to correct summon button
+    {                               
+        MouseClickDrag, left, 975, 800, 975, 400,100    ; Drag down
+        Sleep, 1100
+	}
+}
+
 
 TakeScreenshots()
 {
